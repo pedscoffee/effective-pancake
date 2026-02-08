@@ -1,4 +1,5 @@
 import { noteStyles, scribeTemplates, baseScribeRole } from './templates.js';
+import { getConversationManager } from './conversation.js';
 
 export class ScribeNoteManager {
     constructor(conversationManager) {
@@ -124,6 +125,13 @@ export async function initScribeNoteManager(conversationManager) {
     return scribeNoteManager;
 }
 
-export function getScribeNoteManager() {
+export function getScribeNoteManager(conversationManager) {
+    if (!scribeNoteManager) {
+        const mgr = conversationManager || getConversationManager();
+        if (mgr) {
+            scribeNoteManager = new ScribeNoteManager(mgr);
+            scribeNoteManager.init();
+        }
+    }
     return scribeNoteManager;
 }

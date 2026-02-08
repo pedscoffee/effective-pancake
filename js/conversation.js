@@ -180,5 +180,8 @@ export async function initConversation() {
 }
 
 export function getConversationManager() {
+    if (!conversationManager) {
+        conversationManager = new ConversationManager();
+    }
     return conversationManager;
 }

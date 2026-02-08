@@ -14,19 +14,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Initialize UI handlers
+        // 1. Initialize Conversation Manager (Object only, no model loading yet)
+        await initConversation();
+
+        // 2. Initialize UI handlers
         initUI();
 
-        // Initialize Speech (Whisper + TTS)
+        // 3. Initialize Speech (Whisper + TTS)
         await initSpeech();
-
-        // Initialize Conversation Manager (WebLLM)
-        await initConversation();
 
         console.log('App initialized');
     } catch (error) {
         console.error('App initialization failed:', error);
-        showError('Initialization Error', 'Failed to initialize the app. Please refresh and try again.\n\nError: ' + error.message);
+        let errorMsg = error.message;
+        if (errorMsg.includes('Cache') || errorMsg.includes('NetworkError')) {
+            errorMsg += '\n\nPossible fix: Clear your browser cache or ensure you are not in private/incognito mode.';
+        }
+        showError('Initialization Error', 'Failed to initialize the app. Please refresh and try again.\n\nError: ' + errorMsg);
     }
 });
 

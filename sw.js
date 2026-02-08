@@ -1,5 +1,5 @@
-const CACHE_NAME = 'soltura-v4';
-const CDN_CACHE = 'soltura-cdn-v1';
+const CACHE_NAME = 'aether-scribe-v1';
+const CDN_CACHE = 'aether-scribe-cdn-v1';
 const APP_SHELL = [
     './index.html',
     './css/styles.css',
@@ -9,13 +9,11 @@ const APP_SHELL = [
     './js/speech.js',
     './js/config.js',
     './js/preferences.js',
-    './js/promptBuilder.js',
+    './js/medicalScribePromptBuilder.js',
+    './js/scribeNoteManager.js',
     './js/templates.js',
     './js/webgpu-check.js',
     './js/asyncStorage.js',
-    './js/tutor.js',
-    './js/scenarios.js',
-    './js/ankiData.js',
     './images/logo.png',
     './images/icon.png',
     './images/favicon.ico',
@@ -52,8 +50,16 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames
-                    .filter((name) => name !== CACHE_NAME && name !== CDN_CACHE)
-                    .map((name) => caches.delete(name))
+                    .filter((name) => {
+                        // Only delete old versions of OUR specific caches
+                        const isOldAppCache = name.startsWith('soltura-') && name !== CACHE_NAME && name !== CDN_CACHE;
+                        const isOldAetherCache = name.startsWith('aether-') && name !== CACHE_NAME;
+                        return isOldAppCache || isOldAetherCache;
+                    })
+                    .map((name) => {
+                        console.log('[Service Worker] Deleting old cache:', name);
+                        return caches.delete(name);
+                    })
             );
         }).then(() => self.clients.claim())
     );

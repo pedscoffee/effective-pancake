@@ -162,4 +162,7 @@ export function initStatsManager() {
     if (!statsManager) statsManager = new StatsManager();
     return statsManager;
 }
-export function getStatsManager() { return statsManager; }
+export function getStatsManager() {
+    if (!statsManager) statsManager = new StatsManager();
+    return statsManager;
+}
